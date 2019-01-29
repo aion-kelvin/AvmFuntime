@@ -1,0 +1,40 @@
+<h1>Web3 lib sanity checker</h1>
+
+<h2>AVM ABI decoder test outputs</h2>
+<p><small>(Hex will be populated here if you're using the version of Web3 that has AVM ABI decoder)</small></p>
+<p>test avm abi example 1 = <span id="abi1"/></p>
+<p>test avm abi example 2 = <span id="abi2"/></p>
+<p>test avm abi example 3 = <span id="abi3"/></p>
+
+<h2>Hash rate</h2>
+<p><small>(Hash rate will be populated here if web3 is connected to a running Aion kernel)</small></p>
+<p>hash rate = <span id="hr"><small>(loading...)</small></span></p>
+
+<script type="text/javascript" src="web3.min.js"></script>
+<script type="text/javascript">  
+// set up
+if(typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
+	var web3 = new Web3(window.web3.currentProvider);
+} else {
+	var endpoint = "http://127.0.0.1:8545"; // Change this to your node if not running locally
+	var web3 = new Web3(new Web3.providers.HttpProvider(endpoint));
+}
+
+// hash rate test
+web3.eth.getHashrate().then( res => document.getElementById("hr").innerHTML = res );
+
+// decoder test
+var method = web3.avm.method("testMethod").argTypes("int", "String[]", "boolean");
+var data1 = method.encodeToHex(5, ["foo", "bar"], false);
+console.log(data1);
+var data2 = method.encodeToHex(5000, null, false);
+console.log(data2);
+var data3 = method.encodeToHex(-5, ["foo", "bar", null], true);
+console.log(data3);
+
+document.getElementById("abi1").innerHTML = data1;
+document.getElementById("abi2").innerHTML = data2;
+document.getElementById("abi3").innerHTML = data3;
+
+</script>
+
