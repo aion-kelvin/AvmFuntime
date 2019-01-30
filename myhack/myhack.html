@@ -10,6 +10,15 @@
 <p><small>(Hash rate will be populated here if web3 is connected to a running Aion kernel)</small></p>
 <p>hash rate = <span id="hr"><small>(loading...)</small></span></p>
 
+<h2>Jar loader</h2>
+<p><small>(jar info will be populated here if web3's jar loader works correctly and small.jar is present)</small></p>
+<p>Jar size:</p>
+<span id="jar_size"><small>(loading...)</small></span>
+<p>Jar encoded string length:</p> 
+<span id="jar_len"><small>(loading...)</small></span>
+<p>Jar encoded string:  </p>
+<span id="jar_str"><small>(loading...)</small></span>
+
 <script type="text/javascript" src="web3.min.js"></script>
 <script type="text/javascript">  
 // set up
@@ -36,5 +45,28 @@ document.getElementById("abi1").innerHTML = data1;
 document.getElementById("abi2").innerHTML = data2;
 document.getElementById("abi3").innerHTML = data3;
 
-</script>
+// jar loading test
+var req = new XMLHttpRequest();
+req.responseType = 'arraybuffer';
+req.addEventListener("load", transferComplete);
+req.open('GET', 'small.jar');
+req.send();
 
+function transferComplete(event)
+{
+    var r = req.response;
+    //console.log('JAR of size: ' + r.byteLength);
+    document.getElementById("jar_size").innerHTML = "<pre>" + r.byteLength + "</pre>"
+    var encoded = web3.avm.deployJar(new Uint8Array(r))
+        .initTypes(web3.avm.TYPES.INT, web3.avm.TYPES.STRING_A)
+        .encodeToHex(-99, ["foo"]);
+    console.log("Encoded to string of length: " + encoded.length);
+    document.getElementById("jar_len").innerHTML = "<pre>" + encoded.length + "</pre>"
+    if (encoded.length < 10000) {
+        console.log(encoded);
+        document.getElementById("jar_str").innerHTML = "<textarea cols=\"200\">" + encoded + "</textarea>"
+    } else {
+        document.getElementById("jar_str").innerHTML = "<textarea cols=\"200\">" + encoded.substring(0,9999) + "</textarea> ... (plus more truncated)"
+    }
+}
+</script>
