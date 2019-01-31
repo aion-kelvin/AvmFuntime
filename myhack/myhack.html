@@ -1,10 +1,16 @@
 <h1>Web3 lib sanity checker</h1>
 
-<h2>AVM ABI decoder test outputs</h2>
+<h2>AVM ABI encoder test outputs</h2>
 <p><small>(Hex will be populated here if you're using the version of Web3 that has AVM ABI decoder)</small></p>
-<p>test avm abi example 1 = <span id="abi1"/></p>
-<p>test avm abi example 2 = <span id="abi2"/></p>
-<p>test avm abi example 3 = <span id="abi3"/></p>
+<p>test avm abi encoder example 1 (int, String[], boolean) = <span id="abi1"/></p>
+<p>test avm abi encoder example 2 (int, String[], boolean)  = <span id="abi2"/></p>
+<p>test avm abi encoder example 3 (int, String[], boolean) = <span id="abi3"/></p>
+<p>test avm abi encoder example 4 (float, long[], int[][], Address, double[]) = <span id="abi4"/></p>
+
+<h2>AVM ABI decoder test outputs</h2>
+<p><small>(Text will be populated here if you're using the version of Web3 that has AVM ABI decoder)</small></p>
+<p>test avm abi decoder example 5 (Object) = <span id="abi5"/></p>
+<p>test avm abi decoder example 6 (Object) = <span id="abi6"/></p>
 
 <h2>Hash rate</h2>
 <p><small>(Hash rate will be populated here if web3 is connected to a running Aion kernel)</small></p>
@@ -32,7 +38,7 @@ if(typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== 
 // hash rate test
 web3.eth.getHashrate().then( res => document.getElementById("hr").innerHTML = res );
 
-// decoder test
+// encoder test
 var method = web3.avm.method("testMethod").argTypes("int", "String[]", "boolean");
 var data1 = method.encodeToHex(5, ["foo", "bar"], false);
 console.log(data1);
@@ -41,9 +47,22 @@ console.log(data2);
 var data3 = method.encodeToHex(-5, ["foo", "bar", null], true);
 console.log(data3);
 
+method = web3.avm.method("moreComplexity").argTypes(web3.avm.TYPES.FLOAT, web3.avm.TYPES.LONG_A, web3.avm.TYPES.INT_2A, web3.avm.TYPES.ADDRESS, web3.avm.TYPES.DOUBLE_A);
+var data4 = method.encodeToHex(-9.87, [-1, 888, -2000000000], [[5, 1000],[-999],[]], '0xa090690831c6bc3a3e00fe7ef1364b4b3e2b3afac0984e3a62b8f77c8d4c5ae5', [-1.0, 5.0]);
+console.log(data4);
+
+// decoder test
+var data5 = web3.avm.decodeOneObjectFromHex("0x21000a746573744d6574686f6405fffffffb31210003210003666f6f21000362617232210201");
+console.log(data5);
+var data6 = web3.avm.decodeOneObjectFromHex("0x05fffffffb31210003210003666f6f21000362617232210201");
+console.log(data6);
+
 document.getElementById("abi1").innerHTML = data1;
 document.getElementById("abi2").innerHTML = data2;
 document.getElementById("abi3").innerHTML = data3;
+document.getElementById("abi4").innerHTML = data4;
+document.getElementById("abi5").innerHTML = data5;
+document.getElementById("abi6").innerHTML = data6;
 
 // jar loading test
 var req = new XMLHttpRequest();
