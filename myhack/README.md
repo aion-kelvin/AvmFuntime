@@ -9,3 +9,9 @@
   - (easy way) Just use the file I've prepared: http://github
   - (hard way) Or create your own using the aion_web3 avm branch source code (see "Web use" in the README) - https://github.com/aionnetwork/aion_web3/blob/avm/README.md
 - Open myhack.html in your browser
+- Jar loader demonstration doesn't work by default on Chrome due to CORS rules
+  - Workaround 1 (easiest) -- use Firefox
+  - Workaround 2 (if you love Chrome) -- start up Chrome with the `--allow-file-access-from-files` flag
+- If hash rate demonstration doesn't work, check:
+  - Is the kernel running?
+  - Make sure RPC server is enabled, port is correct, and cors is enabled on the kernel side (see config.xml)
